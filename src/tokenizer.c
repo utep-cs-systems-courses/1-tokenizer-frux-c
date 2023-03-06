@@ -1,7 +1,4 @@
 #include "tokenizer.h"
-#include <cstdlib>
-#include <cstdio>
-
 
 int space_char(char c){
 	return c == ' ' || c == '\t';
@@ -45,6 +42,8 @@ char *copy_str(char *inStr, short len){
 }
 char **tokenize(char* str){
 	int count = count_words(str);
+	// [['a','b'], ['c','d']]
+	// char []* -> [ *char1, *char2 ]
 	char **tokens = (char**)malloc(sizeof(char*) * count);
 	int i = 0;
 	str = word_start(str);
@@ -67,9 +66,9 @@ void print_tokens(char ** tokens){
 		tokens++;
 	}
 }
-int main(int argc,char *argv[]){
-	const char* str = "hello     world";
-	char **token = tokenize((char*)str);
-	int count = count_words((char*)str);
-	print_tokens(token);
+void free_tokens(char ** tokens){
+	while(*tokens != 0){
+		free(*tokens);
+		tokens++;
+	}
 }

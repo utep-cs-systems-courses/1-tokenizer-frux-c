@@ -1,6 +1,6 @@
 #include "history.h"
-#include <cstdlib>
-#include <cstdio>
+#include "tokenizer.h"
+#include "tokenizer.c"
 
 List *init_history(){
 	List * lst = (List*)malloc(sizeof(List));
@@ -10,16 +10,17 @@ void add_history(List *list,char* str){
 	if(list->root == 0){
 		Item * item = (Item*)malloc(sizeof(Item));
 		item->id = 0;
-		item->str = str;
+		char * start = word_start(str);
+		item->str = copy_str(start,word_terminator(str) - start);
 		list->root = item;
 		return;
 	}
 	Item *tmp = list->root;
-	while(tmp->next != 0)
-		tmp = tmp->next;
+	while(tmp->next != 0) tmp = tmp->next;
 	Item *item = (Item*)malloc(sizeof(Item));
 	item->id = tmp->id + 1;
-	item->str = str;
+	char * start = word_start(str);
+	item->str = copy_str(start,word_terminator(str) - start);
 	tmp->next = item;
 }
 
@@ -30,6 +31,7 @@ char *get_history(List *list, int id){
 	while(tmp != 0 && tmp->id != id){
 		tmp = tmp->next;
 	}
+	if(tmp == 0) return (char*)"No History";
 	return tmp->str;
 }
 
@@ -39,11 +41,4 @@ void print_history(List * list){
 		printf("%d. %s\n",tmp->id,tmp->str);
 		tmp = tmp->next;
 	}
-}
-int main(int argc,char *argv[]){
-	List * mylist = init_history();
-	add_history(mylist,(char *)"this is one");
-	add_history(mylist,(char *)"this is list two");
-	print_history(mylist);
-	return 0;
 }
